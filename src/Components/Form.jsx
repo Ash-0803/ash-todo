@@ -20,7 +20,7 @@ export default function Form(props){
     })
     if(count==0){
     // props.addTask(e.target.elements.text.value)
-      addTask(e.target.elements.text.value)
+      addTask(name)
     }
   }
   const handleChange=(e)=>{

@@ -20,12 +20,14 @@ export default function Task({taskName,completed,id,setData,data}) {
     e.preventDefault()
     setData(prevData=>prevData.map((item,index)=>{
       if(id==index){
-        return {...item,taskName:newTask}
+        return {...item,taskName:editTaskName}
       }
+      else return item
     }))
+    setEditing(false)
   }
-  function handleChange(id){
-    
+  function handleChange(e){
+    setEditTaskName(e.target.value)
   }
   
   const editingTemplate = (
@@ -34,7 +36,7 @@ export default function Task({taskName,completed,id,setData,data}) {
         <label className="todo-label" htmlFor={id}>
           New name for {taskName}
         </label>
-        <input id={id} className="todo-text" type="text" value={editTaskName} onChange={handleChange(id)} />
+        <input id={id} className="todo-text" type="text" value={editTaskName} onChange={handleChange} />
       </div>
       <div className="btn-group">
         <button type="button" className="btn todo-cancel" onClick={()=>setEditing(false)} >
@@ -56,7 +58,7 @@ export default function Task({taskName,completed,id,setData,data}) {
           id={id}
           type="checkbox"
           defaultChecked={completed}
-          onChange={() => toggleTaskCompleted()}
+          onChange={toggleTaskCompleted}
         />
         <label className="todo-label" htmlFor={id}>
           {taskName}
