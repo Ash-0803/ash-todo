@@ -1,33 +1,34 @@
-import {useState} from 'react'
-
-export default function Form(props){
-  const [name,setName]=useState('name')
+import { useState } from "react";
+import { nanoid } from "nanoid";
+export default function Form(props) {
+  const [name, setName] = useState("name");
 
   const addTask = (value) => {
-    props.setData(prevData=>[...prevData,{taskName:value,completed:false}])
-      alert(value,"is added to the list")
-    console.log(props.data)
-  }
-  
-  const handleSubmit=(e)=>{
-    e.preventDefault()
-    let count=0
-    props.data.forEach((item)=>{
-      if(item.taskName===name){
-        alert("Task already exists!")
-        count=1
+    props.setData((prevData) => [
+      ...prevData,
+      { taskName: value, completed: false, id: `todo-${nanoid()}` },
+    ]);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    let count = 0;
+    props.data.forEach((item) => {
+      if (item.taskName === name) {
+        alert("Task already exists!");
+        count = 1;
       }
-    })
-    if(count==0){
-    // props.addTask(e.target.elements.text.value)
-      addTask(name)
+    });
+    if (count == 0) {
+      // props.addTask(e.target.elements.text.value)
+      addTask(name);
     }
-  }
-  const handleChange=(e)=>{
-    setName(e.target.value)
-  }
-  
-  return(
+  };
+  const handleChange = (e) => {
+    setName(e.target.value);
+  };
+
+  return (
     <form onSubmit={handleSubmit}>
       <h2 className="label-wrapper">
         <label htmlFor="new-todo-input" className="label__lg">
@@ -43,9 +44,9 @@ export default function Form(props){
         value={name}
         onChange={handleChange}
       />
-      <button type="submit" className="btn btn__primary btn__lg" >
+      <button type="submit" className="btn btn__primary btn__lg">
         Add
       </button>
     </form>
-  )
+  );
 }
