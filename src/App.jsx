@@ -1,10 +1,31 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import FilterButton from "./Components/FilterButton";
 import Form from "./Components/Form";
 import TaskList from "./Components/TaskList";
 
 function Main(props) {
+  useEffect(() => {
+    const todos = JSON.parse(localStorage.getItem("todos"));
+    console.log(todos);
+    if (todos && todos.length) {
+      console.log("Setting data from local Storage...");
+      props.setData(todos);
+    } else {
+      console.log("Setting default data...");
+      props.setData([
+        { taskName: "Task 1", completed: true, id: "task-1" },
+        { taskName: "Task 2", completed: false, id: "task-2" },
+        { taskName: "Task 3", completed: false, id: "task-3" },
+      ]);
+    }
+  }, []);
+
+  useEffect(() => {
+    console.log("data", props.data);
+    localStorage.setItem("todos", JSON.stringify(props.data));
+  }, [props.data]);
+
   const [filter, setFilter] = useState("All");
   const filterMap = {
     All: () => true,
@@ -37,13 +58,7 @@ function Main(props) {
 }
 
 export default function App() {
-  const initialData = [
-    { taskName: "Task 1", completed: true, id: "task-1" },
-    { taskName: "Task 2", completed: false, id: "task-2" },
-    { taskName: "Task 3", completed: false, id: "task-3" },
-  ];
-
-  const [data, setData] = useState(initialData);
+  const [data, setData] = useState([]);
 
   return (
     <main>
