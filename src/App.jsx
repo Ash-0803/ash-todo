@@ -1,5 +1,13 @@
-import { useContext, useEffect, useState, createContext } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useReducer,
+  useState,
+} from "react";
 import { filterMapContext, filterNamesContext } from "./Context";
+import { Reducer } from "./Reducer";
+
 import "./App.css";
 import FilterButton from "./Components/FilterButton";
 import Form from "./Components/Form";
@@ -54,7 +62,10 @@ function Main(props) {
 }
 
 export default function App() {
-  const [data, setData] = useState([]);
+  const [data, dispatch] = useReducer(Reducer, []);
+  const DataContext = createContext(null);
+  const DispatchContext = createContext(null);
+
   const filterMap = {
     All: () => true,
     Active: (task) => !task.completed,
@@ -64,11 +75,15 @@ export default function App() {
 
   return (
     <main>
-      <filterMapContext.Provider value={filterMap}>
-        <filterNamesContext.Provider value={filterNames}>
-          <Main data={data} setData={setData} />
-        </filterNamesContext.Provider>
-      </filterMapContext.Provider>
+      <DataContext.Provider value={data}>
+        <DispatchContext.Provider value={dispatch}>
+          <filterMapContext.Provider value={filterMap}>
+            <filterNamesContext.Provider value={filterNames}>
+              <Main data={data} setData={setData} />
+            </filterNamesContext.Provider>
+          </filterMapContext.Provider>
+        </DispatchContext.Provider>
+      </DataContext.Provider>
     </main>
   );
 }
