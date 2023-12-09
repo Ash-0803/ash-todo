@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState, createContext } from "react";
+import { filterMapContext, filterNamesContext } from "./Context";
 import "./App.css";
 import FilterButton from "./Components/FilterButton";
 import Form from "./Components/Form";
@@ -27,12 +28,7 @@ function Main(props) {
   }, [props.data]);
 
   const [filter, setFilter] = useState("All");
-  const filterMap = {
-    All: () => true,
-    Active: (task) => !task.completed,
-    Completed: (task) => task.completed,
-  };
-  const filterNames = Object.keys(filterMap);
+  const filterNames = useContext(filterNamesContext);
 
   return (
     <div className="todoapp stack-large">
@@ -52,17 +48,27 @@ function Main(props) {
       </div>
 
       <h2 id="list-heading">{props.data.length} tasks remaining</h2>
-      <TaskList {...props} filterMap={filterMap} filter={filter} />
+      <TaskList {...props} filter={filter} />
     </div>
   );
 }
 
 export default function App() {
   const [data, setData] = useState([]);
+  const filterMap = {
+    All: () => true,
+    Active: (task) => !task.completed,
+    Completed: (task) => task.completed,
+  };
+  const filterNames = Object.keys(filterMap);
 
   return (
     <main>
-      <Main data={data} setData={setData} />
+      <filterMapContext.Provider value={filterMap}>
+        <filterNamesContext.Provider value={filterNames}>
+          <Main data={data} setData={setData} />
+        </filterNamesContext.Provider>
+      </filterMapContext.Provider>
     </main>
   );
 }
