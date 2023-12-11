@@ -1,35 +1,34 @@
-import { useState } from "react";
-
-export default function Task({ taskName, completed, id, setData, data }) {
+import { useContext, useState } from "react";
+import { DataContext, DispatchContext } from "./../Context";
+export default function Task({ taskName, completed, id }) {
   const [isEditing, setEditing] = useState(false);
   const [editTaskName, setEditTaskName] = useState(taskName);
+  const data = useContext(DataContext);
+  const dispatch = useContext(DispatchContext);
 
   function deleteTask(id) {
-    const newData = data.filter((task) => task.id !== id);
-    setData(newData);
+    dispatch({
+      type: "delete_task",
+      id: id,
+    });
   }
 
   function toggleTaskCompleted(e) {
-    setData((prevData) =>
-      prevData.map((task) => {
-        if (e.target.id === task.id) {
-          return { ...task, completed: e.target.checked };
-        } else {
-          return task;
-        }
-      })
-    );
+    dispatch({
+      type: "toggle_task_completed",
+      id: e.target.id,
+      checked: e.target.checked,
+    });
   }
 
   function handleSubmit(e) {
     e.preventDefault();
-    setData((prevData) =>
-      prevData.map((task) => {
-        if (id === task.id) {
-          return { ...task, taskName: editTaskName };
-        } else return task;
-      })
-    );
+    dispatch({
+      type: "handle_submit",
+      id: id,
+      editTaskName: editTaskName,
+    });
+
     setEditing(false);
   }
 

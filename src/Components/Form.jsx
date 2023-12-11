@@ -1,19 +1,21 @@
-import { useState } from "react";
-import { nanoid } from "nanoid";
-export default function Form(props) {
-  const [name, setName] = useState("name");
+import { useState, useContext } from "react";
+import { DataContext, DispatchContext } from "../Context";
 
+export default function Form() {
+  const [name, setName] = useState("name");
+  const data = useContext(DataContext);
+  const dispatch = useContext(DispatchContext);
   const addTask = (value) => {
-    props.setData((prevData) => [
-      ...prevData,
-      { taskName: value, completed: false, id: `todo-${nanoid()}` },
-    ]);
+    dispatch({
+      type: "add_task",
+      value: value,
+    });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     let count = 0;
-    props.data.forEach((item) => {
+    data.forEach((item) => {
       if (item.taskName === name) {
         alert("Task already exists!");
         count = 1;
@@ -21,6 +23,7 @@ export default function Form(props) {
     });
     if (count == 0) {
       // props.addTask(e.target.elements.text.value)
+
       addTask(name);
     }
   };
